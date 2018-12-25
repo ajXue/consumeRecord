@@ -23,7 +23,13 @@ const AddConsume = async (ctx, next) => {
     });
   });
   let doc = await findTokenDB(token);
-  console.log("doc", doc);
+  if(!doc) {
+    ctx.body = {
+      code: "-14",
+      msg: "token失效，重新登录"
+    }
+    return false;
+  }
   doc.consumeInfo.push(saveData["_id"]);
 
   await new Promise((resolve, reject) => {
@@ -47,11 +53,11 @@ const EditConsume = async(ctx, next) => {
   let { textName, type, price, desc, id} = reqInfo;
   let doc = await findTokenDB(token);
   if(!doc) {
-    ctx.status = 401;
     ctx.body = {
-      code: '0',
-      msg: "no token"
+      code: "-14",
+      msg: "token失效，重新登录"
     }
+    return false;
   }
   let consumeDoc = await findOneConsume(id);
   if(!consumeDoc) {
@@ -83,6 +89,13 @@ const DeleteConsume = async(ctx, next) => {
   let reqInfo = ctx.request.query;
   let { id } = reqInfo;
   let doc = await findTokenDB(token);
+  if(!doc) {
+    ctx.body = {
+      code: "-14",
+      msg: "token失效，重新登录"
+    }
+    return false;
+  }
   
   if(doc.consumeInfo && doc.consumeInfo.length) {
     if(doc.consumeInfo.includes('id')) {
@@ -126,6 +139,13 @@ const GetMonData = async (ctx, next) => {
   let { startTime, endTime } = ctx.request.query;
 
   let doc = await findTokenDB(token);
+  if(!doc) {
+    ctx.body = {
+      code: "-14",
+      msg: "token失效，重新登录"
+    }
+    return false;
+  }
   let findMonDoc = await findMonData(doc.consumeInfo, startTime, endTime);
   if (findMonDoc) {
     for (let dayItem of findMonDoc) {
@@ -168,6 +188,7 @@ const findMonData = (consumeInfo, startTime, endTime) => {
         },
         _id: { $in: consumeInfo }
       })
+      .sort({createTime: -1})
       .exec((err, doc) => {
         if (err) reject(err);
         resolve(doc);
