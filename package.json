@@ -1,0 +1,21 @@
+{
+  "name": "consume",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.4.0",
+    "koa": "^2.6.2",
+    "koa-json": "^2.0.2",
+    "koa-router": "^7.4.0",
+    "moment": "^2.22.2",
+    "mongoose": "^5.3.14",
+    "nodemon": "^1.18.7"
+  }
+}
